@@ -48,23 +48,68 @@ router.post(
       //   res.json({error:'please enter a unique value for email', message: err.message})})
       // res.send(req.body);
 
-      const data={
-        user:{
-          id:user.id  
-        }
-      }
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
 
       const authToken = jwt.sign(data, JWT_SECRET);
       console.log(authToken);
       // res.json(user);
-      res.json({authToken})
+      res.json({ authToken });
     } catch (error) {
       console.error(error.message);
-      res.status(500).send("some Error occured");
+      res.status(500).send("Internal Server Error");
     }
   }
 ); // ✅ closes router.post()
 // Day 171 not done today sorry
 // lect 48 complete hash
 // lect 49 half
+
+//Authenticate a user using: POST "/api/auth/login". // no login required
+router.post(
+  "/login",
+  [
+    body("email", "Enter a valid email").isEmail(),
+    body("password", "Password cannot be blank").exists(),
+  ],
+  async(req, res) => {
+    //if there are errors, return bad request and the errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { email, password } = req.body;
+    try {
+      let user =  await User.findOne({ email });
+      if (!user) {
+        return res
+          .status(400)
+          .json({ error: "please try to login with correct credentials" });
+      }
+
+      const passwordCompare = await bcrypt.compare(password, user.password);
+      if (!passwordCompare) {
+        return res
+          .status(400)
+          .json({ error: "please try to login with correct credentials" });
+      }
+
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+
+      const authToken = jwt.sign(data, JWT_SECRET);
+      res.json({ authToken });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
 module.exports = router;
