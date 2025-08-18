@@ -17,5 +17,5 @@ function App() {
     </>
   );
 }
-
+// lect 57 learned about context API
 export default App;
