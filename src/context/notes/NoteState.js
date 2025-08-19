@@ -20,9 +20,40 @@ const NoteState = (props) => {
   //   }, 1000); // ✅ delay after 1 second
   // };
 
+  const notesInitial = [
+    {
+        "_id": "68a18aeaabebbdb9459cdcc4",
+        "user": "689eba9ab82d9f06557c42df",
+        "title": "My Title",
+        "description": "please wake up early",
+        "tag": "personal",
+        "date": "2025-08-17T07:55:22.884Z",
+        "__v": 0
+    },
+    {
+        "_id": "68a18aecabebbdb9459cdcc6",
+        "user": "689eba9ab82d9f06557c42df",
+        "title": "My Title",
+        "description": "please wake up early",
+        "tag": "personal",
+        "date": "2025-08-17T07:55:24.503Z",
+        "__v": 0
+    },
+    {
+        "_id": "68a18aedabebbdb9459cdcc8",
+        "user": "689eba9ab82d9f06557c42df",
+        "title": "My Title",
+        "description": "please wake up early",
+        "tag": "personal",
+        "date": "2025-08-17T07:55:25.761Z",
+        "__v": 0
+    }
+]
+
+const [notes, setNotes] = useState(notesInitial); // ✅ Initialize notes state
   return (
     // ✅ Pass both state & update function via context
-  <NoteContext.Provider value={{}}>
+  <NoteContext.Provider value={{notes, setNotes}}>
       {props.children}
     </NoteContext.Provider>
   );
