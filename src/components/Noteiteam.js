@@ -1,13 +1,21 @@
 import React from "react";
 
 const NoteItem = (props) => {
-  const { note } = props;   // ✅ correct destructuring
+  const { note } = props; // ✅ correct destructuring
   return (
-    <div>
-      <h3>{note.title}</h3>
-      <p>{note.description}</p>
+    <div className="col-md-3 my-3">
+      {" "}
+      {/* ✅ consistent class name */}
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{note.title}</h5>
+          <p class="card-text">
+            {note.description}
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default NoteItem;     // ✅ consistent name
+export default NoteItem; // ✅ consistent name
