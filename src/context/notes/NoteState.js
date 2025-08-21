@@ -1,104 +1,63 @@
+import NoteContext from "./NoteContext";
 import { useState } from "react";
-import NoteContext from "./noteContext";
 
 const NoteState = (props) => {
-  // ✅ Initialize state properly
-  // const s1 = {
-  //   name: "Ubed",
-  //   class: "5c",
-  // };
-
-  // const [state, setState] = useState(s1); // ✅ useState syntax
-
-  // ✅ Proper update function
-  // const update = () => {
-  //   setTimeout(() => {
-  //     setState({
-  //       name: "Updated Ubed",
-  //       class: "10A",
-  //     });
-  //   }, 1000); // ✅ delay after 1 second
-  // };
-
   const notesInitial = [
     {
-      _id: "68a18aeaabebbdb9459cdcc4",
-      user: "689eba9ab82d9f06557c42df",
-      title: "My Title",
-      description: "please wake up early",
-      tag: "personal",
-      date: "2025-08-17T07:55:22.884Z",
-      __v: 0,
+      "_id": "61322f195153781a8ca8d0e06",
+      "user": "6131dc5e3e4037cd4734a066",
+      "title": "My Title",
+      "description": "Please wake up early",
+      "tag": "personal",
+      "date": "2021-09-03T14:20:09.509Z",
+      "__v": 0
     },
     {
-      _id: "68a18aecabebbdb9459cdcc6",
-      user: "689eba9ab82d9f06557c42df",
-      title: "My Title",
-      description: "please wake up early",
-      tag: "personal",
-      date: "2025-08-17T07:55:24.503Z",
-      __v: 0,
-    },
-    {
-      _id: "68a18aedabebbdb9459cdcc84",
-      user: "689eba9ab82d9f06557c42df",
-      title: "My Title",
-      description: "please wake up early",
-      tag: "personal",
-      date: "2025-08-17T07:55:25.761Z",
-      __v: 0,
-    },
-    {
-      _id: "68a18aecabebbdb9459cdcc65",
-      user: "689eba9ab82d9f06557c42df",
-      title: "My Title",
-      description: "please wake up early",
-      tag: "personal",
-      date: "2025-08-17T07:55:24.503Z",
-      __v: 0,
-    },
-    {
-      _id: "68a18aedabebbdb9459cdcc86",
-      user: "689eba9ab82d9f06557c42df",
-      title: "My Title",
-      description: "please wake up early",
-      tag: "personal",
-      date: "2025-08-17T07:55:25.761Z",
-      __v: 0,
-    },
-    {
-      _id: "68a18aecabebbdb9459cdcc67",
-      user: "689eba9ab82d9f06557c42df",
-      title: "My Title",
-      description: "please wake up early",
-      tag: "personal",
-      date: "2025-08-17T07:55:24.503Z",
-      __v: 0,
-    },
-    {
-      _id: "68a18aedabebbdb9459cdcc89",
-      user: "689eba9ab82d9f06557c42df",
-      title: "My Title",
-      description: "please wake up early",
-      tag: "personal",
-      date: "2025-08-17T07:55:25.761Z",
-      __v: 0,
-    },
-    {
-      _id: "68a18aedabebbdb9459cdcc85",
-      user: "689eba9ab82d9f06557c42df",
-      title: "My Title",
-      description: "please wake up early",
-      tag: "personal",
-      date: "2025-08-17T07:55:25.761Z",
-      __v: 0,
-    },
+      "_id": "61322f195531781a8ca8d0e08",
+      "user": "6131dc5e3e4037cd4734a066",
+      "title": "My Title",
+      "description": "Please wake up early",
+      "tag": "personal",
+      "date": "2021-09-03T14:20:09.668Z",
+      "__v": 0
+    }
   ];
 
-  const [notes, setNotes] = useState(notesInitial); // ✅ Initialize notes state
+  const [notes, setNotes] = useState(notesInitial);
+
+  // Add a Note
+  const addNote = (title, description, tag) => {
+    console.log("Adding a new note");
+    const note = {
+      "_id": "61322f119553781a8ca8d0e08",
+      "user": "6131dc5e3e4037cd4734a0664",
+      "title": title,
+      "description": description,
+      "tag": tag,
+      "date": "2021-09-03T14:20:09.668Z",
+      "__v": 0
+    };
+    setNotes(notes.concat(note));
+  };
+
+  // Delete a Note
+  const deleteNote = (id) => {
+    console.log("Deleting the note with id", id);
+    setNotes(notes.filter((note) => note._id !== id));
+  };
+
+  // Edit a Note
+  const editNote = (id, title, description, tag) => {
+    console.log("Editing the note with id", id);
+    setNotes(
+      notes.map((note) =>
+        note._id === id ? { ...note, title, description, tag } : note
+      )
+    );
+  };
+
   return (
-    // ✅ Pass both state & update function via context
-    <NoteContext.Provider value={{ notes, setNotes }}>
+    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote }}>
       {props.children}
     </NoteContext.Provider>
   );
