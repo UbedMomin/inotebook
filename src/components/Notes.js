@@ -1,13 +1,14 @@
-import React, { useContext } from "react";
+import React, { use, useContext, useEffect  } from "react";
 import NoteContext from "../context/notes/NoteContext";
 import Noteitem from "./NoteIteam";
 import AddNote from "./AddNote";
 
 const Notes = () => {
  const context = useContext(NoteContext);
-const { notes, setNotes, addNote } = context;
-
-
+const { notes, getNotes} = context;
+useEffect(() => {
+getNotes(); // Fetch notes on component mount 
+}, []); // Empty dependency array to run only once
   return (
     <>
       <AddNote />
