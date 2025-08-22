@@ -26,9 +26,9 @@ const Notes = () => {
     ref.current.click();
     setNote({
       id: currentNote._id,
-      etitle: currentNote.title || "",        // ✅ avoid undefined
+      etitle: currentNote.title || "", // ✅ avoid undefined
       edescription: currentNote.description || "", // ✅ avoid undefined
-      etag: currentNote.tag || "",            // ✅ avoid undefined
+      etag: currentNote.tag || "", // ✅ avoid undefined
     });
   };
 
@@ -90,8 +90,10 @@ const Notes = () => {
                     className="form-control"
                     id="etitle"
                     name="etitle"
-                    value={note.etitle}   // ✅ always controlled
+                    value={note.etitle} // ✅ always controlled
                     onChange={onChange}
+                    minLength={5} // ✅ added validation
+                    required // ✅ added required attribute
                   />
                 </div>
                 <div className="mb-3">
@@ -103,8 +105,10 @@ const Notes = () => {
                     className="form-control"
                     id="edescription"
                     name="edescription"
-                    value={note.edescription}  // ✅ always controlled
+                    value={note.edescription} // ✅ always controlled
                     onChange={onChange}
+                    minLength={5} // ✅ added validation
+                    required // ✅ added required attribute
                   />
                 </div>
                 <div className="mb-3">
@@ -116,7 +120,7 @@ const Notes = () => {
                     className="form-control"
                     id="etag"
                     name="etag"
-                    value={note.etag}  // ✅ always controlled
+                    value={note.etag} // ✅ always controlled
                     onChange={onChange}
                   />
                 </div>
@@ -135,6 +139,7 @@ const Notes = () => {
                 type="button"
                 className="btn btn-primary"
                 onClick={handleClick}
+                disabled={note.etitle.length < 5 || note.edescription.length < 5}
               >
                 Update Note
               </button>
@@ -144,10 +149,13 @@ const Notes = () => {
       </div>
 
       {/* Notes List */}
-      <div className="row my-3">
+      <div className=" row my-3">
         <h2>Your Notes</h2>
+        <div className="container">
+          {notes.length === 0 && "No notes to display"}
+        </div>
         {notes.map((note) => (
-          <NoteItem key={note._id} updateNote={updateNote} note={note} /> 
+          <NoteItem key={note._id} updateNote={updateNote} note={note} />
           // ✅ fixed: added key here
         ))}
       </div>

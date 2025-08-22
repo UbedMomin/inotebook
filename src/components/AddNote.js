@@ -15,6 +15,7 @@ const AddNote = () => {
     e.preventDefault();
     addNote(note.title, note.description, note.tag);
     setNote({ title: "", description: "", tag: "" }); // ✅ clear after submit
+    setNote({ title: "", description: "", tag: "" })
   };
 
   const onChange = (e) => {
@@ -34,8 +35,10 @@ const AddNote = () => {
             className="form-control"
             id="title"
             name="title"
-            value={note.title}       // ✅ controlled
+            value={note.title} // ✅ controlled
             onChange={onChange}
+            minLength={5} // ✅ added validation
+            required // ✅ added required attribute
           />
         </div>
         <div className="mb-3">
@@ -49,6 +52,8 @@ const AddNote = () => {
             name="description"
             value={note.description} // ✅ controlled
             onChange={onChange}
+            minLength={5} // ✅ added validation
+            required // ✅ added required attribute
           />
         </div>
         <div className="mb-3">
@@ -60,12 +65,14 @@ const AddNote = () => {
             className="form-control"
             id="tag"
             name="tag"
-            value={note.tag}         // ✅ controlled
+            value={note.tag} // ✅ controlled
             onChange={onChange}
+            minLength={5} // ✅ added validation
+            required // ✅ added required attribute
           />
         </div>
 
-        <button type="submit" className="btn btn-primary" onClick={handleClick}>
+        <button disabled={note.title.length<5 || note.description.length<5} type="submit" className="btn btn-primary" onClick={handleClick}>
           Add Note
         </button>
       </form>
