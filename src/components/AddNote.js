@@ -8,17 +8,19 @@ const AddNote = () => {
   const [note, setNote] = useState({
     title: "",
     description: "",
-    tag: "default",
+    tag: "",
   });
 
   const handleClick = (e) => {
     e.preventDefault();
     addNote(note.title, note.description, note.tag);
+    setNote({ title: "", description: "", tag: "" }); // ✅ clear after submit
   };
 
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
+
   return (
     <div className="container my-3">
       <h2>Add a Note</h2>
@@ -32,7 +34,7 @@ const AddNote = () => {
             className="form-control"
             id="title"
             name="title"
-            aria-describedby="emailHelp"
+            value={note.title}       // ✅ controlled
             onChange={onChange}
           />
         </div>
@@ -45,6 +47,7 @@ const AddNote = () => {
             className="form-control"
             id="description"
             name="description"
+            value={note.description} // ✅ controlled
             onChange={onChange}
           />
         </div>
@@ -57,6 +60,7 @@ const AddNote = () => {
             className="form-control"
             id="tag"
             name="tag"
+            value={note.tag}         // ✅ controlled
             onChange={onChange}
           />
         </div>
@@ -68,5 +72,5 @@ const AddNote = () => {
     </div>
   );
 };
-// lect 63 completed
+
 export default AddNote;

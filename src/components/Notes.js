@@ -1,32 +1,42 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import NoteContext from "../context/notes/NoteContext";
-import Noteitem from "./NoteIteam";
+import NoteItem from "./NoteItem";
 import AddNote from "./AddNote";
 
 const Notes = () => {
   const context = useContext(NoteContext);
-  const { notes, getNotes } = context;
+  const { notes, getNotes, editNote } = context;
 
-  const ref = useRef(null); // ✅ useRef must be at top level
+  const ref = useRef(null);
+  const refClose = useRef(null);
+
   const [note, setNote] = useState({
+    id: "",
     etitle: "",
     edescription: "",
     etag: "",
   });
 
   useEffect(() => {
-    getNotes(); // Fetch notes on component mount
+    getNotes();
     // eslint-disable-next-line
   }, []);
 
   const updateNote = (currentNote) => {
-    ref.current.click(); // ✅ trigger modal via ref
-    setNote({etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag});
+    ref.current.click();
+    setNote({
+      id: currentNote._id,
+      etitle: currentNote.title || "",        // ✅ avoid undefined
+      edescription: currentNote.description || "", // ✅ avoid undefined
+      etag: currentNote.tag || "",            // ✅ avoid undefined
+    });
   };
 
   const handleClick = (e) => {
     console.log("Updating the note...", note);
-    e.preventDefault();
+    editNote(note.id, note.etitle, note.edescription, note.etag);
+    refClose.current.click();
+    document.activeElement.blur(); // ✅ Fix ARIA warning
   };
 
   const onChange = (e) => {
@@ -60,7 +70,7 @@ const Notes = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Modal title
+                Edit Note
               </h1>
               <button
                 type="button"
@@ -80,8 +90,7 @@ const Notes = () => {
                     className="form-control"
                     id="etitle"
                     name="etitle"
-                    value={note.etitle}
-                    aria-describedby="emailHelp"
+                    value={note.etitle}   // ✅ always controlled
                     onChange={onChange}
                   />
                 </div>
@@ -94,7 +103,7 @@ const Notes = () => {
                     className="form-control"
                     id="edescription"
                     name="edescription"
-                    value={note.edescription}
+                    value={note.edescription}  // ✅ always controlled
                     onChange={onChange}
                   />
                 </div>
@@ -107,7 +116,7 @@ const Notes = () => {
                     className="form-control"
                     id="etag"
                     name="etag"
-                    value={note.etag}
+                    value={note.etag}  // ✅ always controlled
                     onChange={onChange}
                   />
                 </div>
@@ -115,14 +124,19 @@ const Notes = () => {
             </div>
             <div className="modal-footer">
               <button
+                ref={refClose}
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary" onClick={handleClick}>
-                Update Note{" "}
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleClick}
+              >
+                Update Note
               </button>
             </div>
           </div>
@@ -132,11 +146,10 @@ const Notes = () => {
       {/* Notes List */}
       <div className="row my-3">
         <h2>Your Notes</h2>
-        {notes.map((note) => {
-          return (
-            <Noteitem key={note._id} updateNote={updateNote} note={note} />
-          );
-        })}
+        {notes.map((note) => (
+          <NoteItem key={note._id} updateNote={updateNote} note={note} /> 
+          // ✅ fixed: added key here
+        ))}
       </div>
     </>
   );
