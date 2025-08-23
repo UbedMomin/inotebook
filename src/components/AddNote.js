@@ -13,7 +13,7 @@ const AddNote = () => {
 
   const handleClick = (e) => {
     e.preventDefault();
-    addNote(note.title, note.description, note.tag);
+    addNote(note.title, note.description, note.tag); 
     setNote({ title: "", description: "", tag: "" }); // ✅ clear after submit
     setNote({ title: "", description: "", tag: "" })
   };
