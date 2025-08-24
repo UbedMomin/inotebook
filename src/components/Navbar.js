@@ -48,10 +48,10 @@ const Navbar = () => {
               </li>
             </ul>
             <form className="d-flex" role="search">
-              <Link className="btn btn-primary mx-2" to="/Login" role="button">
+              <Link className="btn btn-primary mx-1" to="/Login" role="button">
                 Login
               </Link>
-              <Link className="btn btn-primary mx-2" to="/Signup" role="button">
+              <Link className="btn btn-primary mx-1s" to="/Signup" role="button">
                 SignUp
               </Link>
             </form>
