@@ -1,15 +1,16 @@
 const express = require("express");
-const { model } = require("mongoose"); 
+// ❌ removed unused `{ model }` import from mongoose
+// const { model } = require("mongoose");
 const User = require("../models/User");
 const router = express.Router();
-const { query, validationResult, body } = require("express-validator");
+const { validationResult, body } = require("express-validator"); // ❌ removed unused query
 const bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 var fetchuser = require("../middleware/fetchuser");
 
 const JWT_SECRET = "Ubedisagoodb$oy";
 
-// ROUTE 1 : create  a user using: POST "/api/auth/createuser". dosen't require Auth  // no login required
+// ROUTE 1 : create a user using: POST "/api/auth/createuser". doesn't require Auth
 router.post(
   "/createuser",
   [
@@ -19,16 +20,20 @@ router.post(
   ],
 
   async (req, res) => {
+    let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
     try {
       let user = await User.findOne({ email: req.body.email });
       if (user) {
         return res
           .status(400)
-          .json({ error: "sorry a user with this email already exists " });
+          .json({
+            success,
+            error: "sorry a user with this email already exists ",
+          });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -46,17 +51,19 @@ router.post(
       };
 
       const authToken = jwt.sign(data, JWT_SECRET);
-      console.log(authToken);
-      let success = true;
+      success = true;
+      console.log(success, authToken);
+
+      // ❌ removed duplicate "let success = true;" (already declared above)
       res.json({ success, authToken });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Internal Server Error");
     }
   }
-); // ✅ fixed closing parenthesis + bracket properly here
+);
 
-// ROUTE 2 : Authenticate a user using: POST "/api/auth/login". // no login required
+// ROUTE 2 : Authenticate a user using: POST "/api/auth/login". no login required
 router.post(
   "/login",
   [
@@ -95,7 +102,7 @@ router.post(
       };
 
       const authToken = jwt.sign(data, JWT_SECRET);
-      res.json({ success: true, authToken }); // ✅ added success:true here for consistency
+      res.json({ success: true, authToken }); // ✅ success:true added
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Internal Server Error");
@@ -103,10 +110,10 @@ router.post(
   }
 );
 
-// ROUTE 3 : Get Loggedin user details: POST "/api/auth/getuser". //login required
+// ROUTE 3 : Get Loggedin user details: POST "/api/auth/getuser". login required
 router.post("/getuser", fetchuser, async (req, res) => {
   try {
-    const userId = req.user.id; // ✅ added const before userId (was missing)
+    const userId = req.user.id; // ✅ added const
     const user = await User.findById(userId).select("-password");
     res.send(user);
   } catch (error) {
