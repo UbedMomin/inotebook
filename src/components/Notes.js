@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import NoteContext from "../context/notes/NoteContext";
 import NoteItem from "./NoteItem";
 import AddNote from "./AddNote";
+import { useNavigate } from "react-router-dom";
 
 const Notes = (props) => {
   const context = useContext(NoteContext);
-  const { notes, getNotes, editNote } = context;
+  let navigate = useNavigate();
+  const { notes = [], getNotes, editNote } = context;
 
   const ref = useRef(null);
   const refClose = useRef(null);
@@ -17,8 +19,21 @@ const Notes = (props) => {
     etag: "",
   });
 
+  // ✅ FIX: Add loading state to prevent rendering before auth check
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    getNotes();
+    // ✅ FIX: Check authentication first before doing anything
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsAuthenticated(true);
+      getNotes();
+    } else {
+      navigate("/login");
+    }
+    // ✅ FIX: Set loading to false after auth check
+    setIsLoading(false);
     // eslint-disable-next-line
   }, []);
 
@@ -26,17 +41,16 @@ const Notes = (props) => {
     ref.current.click();
     setNote({
       id: currentNote._id,
-      etitle: currentNote.title || "", // ✅ avoid undefined
-      edescription: currentNote.description || "", // ✅ avoid undefined
-      etag: currentNote.tag || "", // ✅ avoid undefined
+      etitle: currentNote.title || "",
+      edescription: currentNote.description || "",
+      etag: currentNote.tag || "",
     });
   };
 
-  const handleClick = (e) => {
-    console.log("Updating the note...", note);
+  const handleClick = () => {
     editNote(note.id, note.etitle, note.edescription, note.etag);
     refClose.current.click();
-    document.activeElement.blur(); // ✅ Fix ARIA warning
+    document.activeElement.blur();
     props.showAlert("Updated Successfully", "success");
   };
 
@@ -44,11 +58,21 @@ const Notes = (props) => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
 
+  // ✅ FIX: Show loading or return null while checking authentication
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // ✅ FIX: Don't render anything if not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
     <>
       <AddNote showAlert={props.showAlert} />
 
-      {/* Hidden button to trigger modal */}
+      {/* Hidden trigger for modal */}
       <button
         ref={ref}
         type="button"
@@ -59,7 +83,7 @@ const Notes = (props) => {
         Launch demo modal
       </button>
 
-      {/* Modal */}
+      {/* Edit Note Modal */}
       <div
         className="modal fade"
         id="exampleModal"
@@ -91,10 +115,10 @@ const Notes = (props) => {
                     className="form-control"
                     id="etitle"
                     name="etitle"
-                    value={note.etitle} // ✅ always controlled
+                    value={note.etitle}
                     onChange={onChange}
-                    minLength={5} // ✅ added validation
-                    required // ✅ added required attribute
+                    minLength={5}
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -106,10 +130,10 @@ const Notes = (props) => {
                     className="form-control"
                     id="edescription"
                     name="edescription"
-                    value={note.edescription} // ✅ always controlled
+                    value={note.edescription}
                     onChange={onChange}
-                    minLength={5} // ✅ added validation
-                    required // ✅ added required attribute
+                    minLength={5}
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -121,7 +145,7 @@ const Notes = (props) => {
                     className="form-control"
                     id="etag"
                     name="etag"
-                    value={note.etag} // ✅ always controlled
+                    value={note.etag}
                     onChange={onChange}
                   />
                 </div>
@@ -152,7 +176,7 @@ const Notes = (props) => {
       </div>
 
       {/* Notes List */}
-      <div className=" row my-3">
+      <div className="row my-3">
         <h2>Your Notes</h2>
         <div className="container">
           {notes.length === 0 && "No notes to display"}
@@ -164,7 +188,6 @@ const Notes = (props) => {
             showAlert={props.showAlert}
             note={note}
           />
-          // ✅ fixed: added key here
         ))}
       </div>
     </>

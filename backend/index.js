@@ -7,16 +7,16 @@ connectToMongo();
 const app = express();
 const port = 5000;
 
-// ✅ Enable CORS before routes
+// ✅ FIX: allow frontend
 app.use(cors({
-  origin: "http://localhost:3000",  // frontend URL
+  origin: "http://localhost:3000",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
 app.use(express.json());
 
-// Available routes
+// Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/notes", require("./routes/notes"));
 
